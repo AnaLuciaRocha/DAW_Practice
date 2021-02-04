@@ -2,38 +2,46 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Users
- *
- * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="email", columns={"email"})})
- * @ORM\Entity
+ * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="index_users_on_email", columns={"email"})})
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="Email already exists in database!"
+ * )
+ * @ORM\Entity(repositoryClass=UserRepository::class)
  */
-class Users
+class User implements UserInterface
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="name", type="string", length=255, nullable=true, options={"default"="NULL"})
      */
     private $name;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="email", type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Email
      */
     private $email;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
 
     /**
      * @var \DateTime
@@ -49,68 +57,63 @@ class Users
      */
     private $updatedAt;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="password_digest", type="string", length=255, nullable=true)
-     */
-    private $passwordDigest;
 
     /**
+     * @var string The hashed password
+     * @ORM\Column(name="password_digest", type="string")
+     */
+    private $password;
+
+    
+    /**
      * @var string|null
      *
-     * @ORM\Column(name="remember_digest", type="string", length=255, nullable=true)
+     * @ORM\Column(name="remember_digest", type="string", length=255, nullable=true, options={"default"="NULL"})
      */
-    private $rememberDigest;
+    private $rememberDigest = 'NULL';
 
     /**
      * @var bool|null
      *
      * @ORM\Column(name="admin", type="boolean", nullable=true)
      */
-    private $admin;
+    private $admin = '0';
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="activation_digest", type="string", length=255, nullable=true)
+     * @ORM\Column(name="activation_digest", type="string", length=255, nullable=true, options={"default"="NULL"})
      */
-    private $activationDigest;
+    private $activationDigest = NULL;
 
     /**
      * @var bool|null
      *
-     * @ORM\Column(name="activated", type="boolean", nullable=true)
+     * @ORM\Column(name="activated", type="boolean", nullable=true, options={"default"=NULL})
      */
-    private $activated;
+    private $activated = NULL;
 
     /**
      * @var \DateTime|null
      *
-     * @ORM\Column(name="activated_at", type="datetime", nullable=true)
+     * @ORM\Column(name="activated_at", type="datetime", nullable=true, options={"default"=NULL})
      */
-    private $activatedAt;
+    private $activatedAt = NULL;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="reset_digest", type="string", length=255, nullable=true)
+     * @ORM\Column(name="reset_digest", type="string", length=255, nullable=true, options={"default"=NULL})
      */
-    private $resetDigest;
+    private $resetDigest = NULL;
 
     /**
      * @var \DateTime|null
      *
-     * @ORM\Column(name="reset_sent_at", type="datetime", nullable=true)
+     * @ORM\Column(name="reset_sent_at", type="datetime", nullable=true, options={"default"=NULL})
      */
-    private $resetSentAt;
+    private $resetSentAt = NULL;
 
-    /**
-     * @var json|null
-     *
-     * @ORM\Column(name="roles", type="json", nullable=true)
-     */
-    private $roles;
 
     public function getId(): ?int
     {
@@ -129,12 +132,13 @@ class Users
         return $this;
     }
 
+
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail(?string $email): self
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
@@ -261,17 +265,64 @@ class Users
         return $this;
     }
 
-    public function getRoles(): ?array
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUsername(): string
     {
-        return $this->roles;
+        return (string) $this->email;
     }
 
-    public function setRoles(?array $roles): self
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
     {
         $this->roles = $roles;
 
         return $this;
     }
 
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
+    {
+        return (string) $this->password;
+    }
 
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getSalt()
+    {
+        // not needed when using the "bcrypt" algorithm in security.yaml
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
 }

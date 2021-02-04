@@ -37,4 +37,46 @@ class BakeryController extends AbstractController
             'controller_name' => 'BakeryController',
         ]);
     }
+
+    /**
+     * @Route("menu/{category_id?}", name="menu")
+     */
+    // public function menu(Request $request, ProductsRepository $prodRepo, CategoriesRepository $categories): Response
+    // {
+
+
+    //     $products = $prodRepo->getProducts();
+    //     $categories = $categories->getCategories();
+
+    //     // var_dump($products[0]->getCategory()->getId());
+
+    //     if (!$products) {
+    //         $this->addFlash('danger', 'Unable to find products from database!');
+    //     }
+    //     if (!$categories) {
+    //         $this->addFlash('danger', 'Unable to find categories from database!');
+    //     }
+
+    //     $sessionCart = $request->getSession();
+    //     $cart = $sessionCart->get('cart');
+
+
+    //     // $cart = $this->cart($request, $prodRepo);
+
+    //     // var_dump(key($cart));
+    //     // var_dump($cart);
+    //     // die();
+
+    //     return $this->render('eshop/home.html.twig', [
+    //         'controller_name' => 'EshopController',
+    //         'products' => $products,
+    //         'categories' => $categories,
+    //         'cart' => $cart,
+    //         'product' => $prodRepo
+
+    //         // 'cart_size' => $cart['size'],
+    //         // 'cart_price' => $cart['price']
+    //     ]);
+    // }
+
 }

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Products
  *
  * @ORM\Table(name="products", indexes={@ORM\Index(name="cat_id", columns={"cat_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\ProductsRepository")
  */
 class Products
 {
@@ -49,15 +49,34 @@ class Products
      */
     private $image;
 
-    /**
-     * @var \Categories
-     *
-     * @ORM\ManyToOne(targetEntity="Categories")
-     * @ORM\JoinColumns({
+ 
+      /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Categories", inversedBy="products")
+     *  * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="cat_id", referencedColumnName="id")
      * })
      */
-    private $cat;
+    private $category;
+
+    
+    // /**
+    //  * One product has many features. This is the inverse side.
+    //  * @OneToMany(targetEntity="OrderItems", mappedBy="product")
+    //  */
+    // private $orderItems;
+
+    public function getCategory(): ?Categories
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Categories $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+    
 
     public function getId(): ?int
     {
@@ -112,17 +131,13 @@ class Products
         return $this;
     }
 
-    public function getCat(): ?Categories
-    {
-        return $this->cat;
-    }
+    // public function getProduct(? int $id):Products
+    // {   $result = null;
+    //     if($id != $this->$id)
+    //         $result = $this;
+    //     return $result;
+    // }
 
-    public function setCat(?Categories $cat): self
-    {
-        $this->cat = $cat;
-
-        return $this;
-    }
 
 
 }

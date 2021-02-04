@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Orders
  *
- * @ORM\Table(name="orders", indexes={@ORM\Index(name="user_id", columns={"user_id"}), @ORM\Index(name="product_id", columns={"product_id"})})
- * @ORM\Entity
+ * @ORM\Table(name="orders", indexes={@ORM\Index(name="user_id", columns={"user_id"})})
+* @ORM\Entity(repositoryClass="App\Repository\OrdersRepository")
  */
 class Orders
 {
@@ -29,24 +29,28 @@ class Orders
     private $createdAt;
 
     /**
-     * @var \Users
+     * @var bool|null
      *
-     * @ORM\ManyToOne(targetEntity="Users")
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(name="total", type="integer", nullable=true)
+     */
+    private $total;
+
+    /**
+     * 
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
      */
     private $user;
-
-    /**
-     * @var \Products
-     *
-     * @ORM\ManyToOne(targetEntity="Products")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="product_id", referencedColumnName="id")
-     * })
-     */
-    private $product;
 
     public function getId(): ?int
     {
@@ -65,26 +69,38 @@ class Orders
         return $this;
     }
 
-    public function getUser(): ?Users
+    public function getStatus(): ?bool
     {
-        return $this->user;
+        return $this->status;
     }
 
-    public function setUser(?Users $user): self
+    public function setStatus(?bool $status): self
     {
-        $this->user = $user;
+        $this->status = $status;
 
         return $this;
     }
 
-    public function getProduct(): ?Products
+    public function getTotal(): ?int
     {
-        return $this->product;
+        return $this->total;
     }
 
-    public function setProduct(?Products $product): self
+    public function setTotal(?int $total): self
     {
-        $this->product = $product;
+        $this->total = $total;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
