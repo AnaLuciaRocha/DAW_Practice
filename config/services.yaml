@@ -6,6 +6,7 @@
 parameters:
 
 services:
+    Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider: ~
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -29,3 +30,7 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    logout_success_handler:
+        class: App\Handler\LogoutSuccessHandler
+        arguments: ["@router", "@security.token_storage"]
