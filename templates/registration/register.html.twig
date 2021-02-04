@@ -1,21 +1,207 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Register
+{% endblock %}
 
 {% block body %}
-    {% for flashError in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
-    {% endfor %}
 
-    <h1>Register</h1>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+	<header>
+		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+			{% set menu_2  %}
+			<li>
+				<a>Welcome
+					{{app.user.name }}!</a>
+			</li>
+			{% endset %}
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+			{% set menu_3  %}
+			<li>
+				<a href="#">Logout</a>
+				{# <a href="{{ path('app_login')}}">Logout</a> #}
+
+			</li>
+			{% endset %}
+
+			{% set menu_my_orders  %}
+			<li>
+				<a href="#">My Orders</a>
+				{# <a href="{{ path('myOrders')}}">My Orders</a> #}
+
+			</li>
+			{% endset %}
+
+
+		{% else %}
+			{% set vars = [] %}
+			{% set menu_2  %}
+			<li>
+				<a href="#">Register</a>
+
+				{# <a href="{{ path('app_register')}}">Register</a> #}
+			</li>
+			{% endset %}
+
+			{% set menu_3  %}
+			<li>
+				<a href="#">Login</a>
+				{# <a href="{{ path('app_login')}}">Login</a> #}
+
+			</li>
+			{% endset %}
+
+			{% set menu_my_orders = '' %}
+		{% endif %}
+
+		{% set menu_1  %}
+		<li
+			class="menu-active">
+			{# {{ path('bakery')}} #}
+			<a href="#">Menu</a>
+		</li>
+		{% endset %}
+
+
+		{% set vars = {  menu_1, menu_2, menu_3, menu_my_orders} %}
+
+		{% include "/includes/navebar.html.twig" with vars %}
+
+
+	</header>
+
+	{% for flashError in app.flashes('verify_email_error') %}
+		<div class="alert alert-danger" role="alert">{{ flashError }}</div>
+	{% endfor %}
+
+	<!-- start banner Area -->
+	<section class="banner-area relative about-banner" id="home">
+		<div class="overlay overlay-bg"></div>
+		<div class="container">
+			<div class="row d-flex align-items-center justify-content-center">
+				<div class="about-content col-lg-12">
+					<h1 class="text-white">
+						Register
+					</h1>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End banner Area -->
+
+
+	<body>
+
+		{% for flashError in app.flashes('verify_email_error') %}
+			<div class="alert alert-danger" role="alert">
+				{{ flashError }}</div>
+		{% endfor %}
+
+
+
+
+			<!-- Start contact-page Area -->
+			<section class="contact-page-area section-gap">
+				<div class="container">
+					<div class="row">
+
+						<div class="col-lg-12">
+							{# <form class="form-area " id="myForm"  class="contact-form text-right"> #}
+                            {{ form_start(registrationForm)}}
+                            <div class="form-area " id="myForm" class="contact-form text-right" >
+								<div class="row">	
+									<div class="col-lg-6 form-group">
+									
+                                        
+					                    {{ form_row(registrationForm.name, {'attr': {'name':"name" ,'placeholder': "Enter your name", 'onfocus' : "this.placeholder = ''", 'onblur' : "this.placeholder = 'Enter your name'", 'class' : "common-input mb-20 form-control"  }})}}
+					                    {{ form_row(registrationForm.email, {'attr': {'name':"email" ,'placeholder': "Enter email address", 'pattern' : "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$", 'onfocus' : "this.placeholder = ''", 'onblur' : "this.placeholder = 'Enter email address'", 'class' : "common-input mb-20 form-control"  }})}}
+					                    {{ form_row(registrationForm.plainPassword.first, {'attr': {'name':"password1" ,'placeholder': "Enter password", 'onfocus' : "this.placeholder = ''", 'onblur' : "this.placeholder = 'Enter password'", 'class' : "common-input mb-20 form-control", 'type' : "password"  }})}}
+					                    {{ form_row(registrationForm.plainPassword.second, {'attr': {'name':"password2" ,'placeholder': "Repeat password", 'onfocus' : "this.placeholder = ''", 'onblur' : "this.placeholder = 'Repeat password'", 'class' : "common-input mb-20 form-control"  }})}}
+				                    
+                                    </div>
+									<div class="col-lg-12">
+										<div class="alert-msg" style="text-align: left;"></div>
+										<button  class="genric-btn primary" type="submit" name="submitok" style="float: left;">Register</button>
+									</div>
+                                   
+								</div> 
+                                </div>
+                                {{ form_end(registrationForm) }}
+							{# </form>	 #}
+						</div>
+					</div>
+				</div>	
+			</section>
+			<!-- End contact-page Area -->
+
+	</body>
+
+
+	<!-- start footer Area -->
+	<footer class="footer-area section-gap">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-5 col-md-6 col-sm-6">
+					<div class="single-footer-widget">
+						<h6>About Us</h6>
+						<p>
+							We are the best bakery in town!
+						</p>
+					</div>
+				</div>
+				<div class="col-lg-5  col-md-6 col-sm-6">
+					<div class="single-footer-widget">
+						<h6>Newsletter</h6>
+						<p>Stay update with our latest</p>
+						<div class="" id="mc_embed_signup">
+							<form target="_blank" novalidate="true" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="form-inline">
+								<input class="form-control" name="EMAIL" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address'" required="" type="email">
+								<button class="click-btn">
+									<i class="lnr lnr-arrow-right" aria-hidden="true"></i>
+								</button>
+								<div style="position: absolute; left: -5000px;">
+									<input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
+								</div>
+								<div class="info"></div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-2 col-md-6 col-sm-6 social-widget">
+					<div class="single-footer-widget">
+						<h6>Follow Us</h6>
+						<p>Let us be social</p>
+						<div class="footer-social d-flex align-items-center">
+							<a href="#">
+								<i class="fa fa-facebook"></i>
+							</a>
+							<a href="#">
+								<i class="fa fa-twitter"></i>
+							</a>
+							<a href="#">
+								<i class="fa fa-dribbble"></i>
+							</a>
+							<a href="#">
+								<i class="fa fa-behance"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<p
+						class="footer-text">
+						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+						Copyright &copy;<script>
+							document.write(new Date().getFullYear());
+						</script>
+						All rights reserved | This template is made with
+						<i class="fa fa-heart-o" aria-hidden="true"></i>
+						by
+						<a href="https://colorlib.com" target="_blank">Colorlib</a>
+						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+					</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- End footer Area -->
 {% endblock %}
