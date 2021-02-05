@@ -17,15 +17,13 @@
 
 			{% set menu_3  %}
 			<li>
-				<a href="#">Logout</a>
-				{# <a href="{{ path('app_login')}}">Logout</a> #}
-
+				<a href="{{ path('app_logout') }}">Logout</a>
 			</li>
 			{% endset %}
 
 			{% set menu_my_orders  %}
 			<li>
-				<a href="#">My Orders</a>
+				<a href="'{{ path('myOrders')}}'">My Orders</a>
 				{# <a href="{{ path('myOrders')}}">My Orders</a> #}
 
 			</li>

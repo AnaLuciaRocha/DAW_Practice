@@ -23,8 +23,9 @@
 
             {% set menu_my_orders  %}
             <li>
-				<a href="#">My Orders</a>
-				{# <a href="{{ path('myOrders')}}">My Orders</a> #}
+				{# <a href="#">My Orders</a> #}
+				
+				<a href="{{ path('myOrders')}}">My Orders</a>
 
 			</li>
 			{% endset %}
@@ -54,7 +55,7 @@
 		{% set menu_1  %}
 		<li
 			class="menu-active">
-			<a href="{{ path('bakery')}}">Menu</a>
+			<a href="{{ path('menu')}}">Menu</a>
 		</li>
 		{% endset %}
 

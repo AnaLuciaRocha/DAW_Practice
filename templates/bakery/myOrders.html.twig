@@ -8,27 +8,16 @@
 
 	<header>
 		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-			{% set menu_2  %}
-			<li>
-				<a>Welcome
-					{{app.user.name }}!</a>
-			</li>
-			{% endset %}
-
+        {% set menu_2 = '' %}
+			
 			{% set menu_3  %}
 			<li>
 				<a href="{{ path('app_logout') }}">Logout</a>
 			</li>
 			{% endset %}
 
-			{% set menu_my_orders  %}
-			<li>
-				<a href="'{{ path('myOrders')}}'">My Orders</a>
-				{# <a href="{{ path('myOrders')}}">My Orders</a> #}
-
-			</li>
-			{% endset %}
-
+			{% set menu_my_orders = '' %}
+		
 
 		{% else %}
 			{% set vars = [] %}
@@ -53,7 +42,7 @@
 
 		{% set menu_1  %}
 		<li class="menu-active">
-			<a href="{{ path('bakery')}}">Menu</a>
+			<a href="{{ path('menu')}}">Menu</a>
 		</li>
 		{% endset %}
 
