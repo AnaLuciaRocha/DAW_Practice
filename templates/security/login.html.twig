@@ -1,42 +1,178 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Login
+{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
-    {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" required>
+	<header>
 
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
+		{% set vars = [] %}
 
-    {#
-        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-        See https://symfony.com/doc/current/security/remember_me.html
+		{% set menu_3  %}
+		<li>
+			<a href="{{ path('app_logout') }}">Logout</a>
+			{# <a href="#">Logout</a> #}
+		</li>
+		{% endset %}
 
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Remember me
-            </label>
-        </div>
-    #}
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+		{% set menu_2  %}
+		<li>
+			<a href="{{ path('bakery')}}">Home</a>
+		</li>
+		{% endset %}
+
+		{% set menu_my_orders = '' %}
+		{% set menu_1 = '' %}
+
+
+		{% set vars = {  menu_1, menu_2, menu_3, menu_my_orders} %}
+
+		{% if app.request.get('logout') == "success" %}
+			<p>You have successfully logged out!</p>
+		{% endif %}
+
+		{% include "/includes/navebar.html.twig" with vars %}
+
+
+	</header>
+
+	<!-- start banner Area -->
+	<section class="banner-area relative about-banner" id="home">
+		<div class="overlay overlay-bg"></div>
+		<div class="container">
+			<div class="row d-flex align-items-center justify-content-center">
+				<div class="about-content col-lg-12">
+					<h1 class="text-white">
+						Login
+					</h1>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End banner Area -->
+
+
+	<body>
+
+		{% for flashError in app.flashes('verify_email_error') %}
+			<div class="alert alert-danger" role="alert">
+				{{ flashError }}</div>
+		{% endfor %}
+
+		<!-- Start contact-page Area -->
+		<section class="contact-page-area section-gap">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<form method="post" class="form-area " id="myForm" class="contact-form text-right">
+							{% if error %}
+								<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+							{% endif %}
+
+							{% if app.user %}
+								<div class="mb-3">
+									You are logged in as
+									{{ app.user.username }},
+									<a href="{{ path('app_logout') }}">Logout</a>
+								</div>
+							{% endif %}
+							<div class="row">
+								<div class="col-lg-6 form-group">
+
+
+									<label for="inputEmail">Email</label>
+									<input class="common-input mb-20 form-control" type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
+									<label for="inputPassword">Password</label>
+									<input class="common-input mb-20 form-control" type="password" name="password" id="inputPassword" class="form-control" required>
+
+									<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+
+								</div>
+								<div class="col-lg-12">
+									<div class="alert-msg" style="text-align: left;"></div>
+									<button class="genric-btn primary" type="submit" style="float: left;">Sign in</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- End contact-page Area -->
+
+	</body>
+
+	<!-- start footer Area -->
+	<footer class="footer-area section-gap">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-5 col-md-6 col-sm-6">
+					<div class="single-footer-widget">
+						<h6>About Us</h6>
+						<p>
+							We are the best bakery in town!
+						</p>
+					</div>
+				</div>
+				<div class="col-lg-5  col-md-6 col-sm-6">
+					<div class="single-footer-widget">
+						<h6>Newsletter</h6>
+						<p>Stay update with our latest</p>
+						<div class="" id="mc_embed_signup">
+							<form target="_blank" novalidate="true" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="form-inline">
+								<input class="form-control" name="EMAIL" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address'" required="" type="email">
+								<button class="click-btn">
+									<i class="lnr lnr-arrow-right" aria-hidden="true"></i>
+								</button>
+								<div style="position: absolute; left: -5000px;">
+									<input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
+								</div>
+								<div class="info"></div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-2 col-md-6 col-sm-6 social-widget">
+					<div class="single-footer-widget">
+						<h6>Follow Us</h6>
+						<p>Let us be social</p>
+						<div class="footer-social d-flex align-items-center">
+							<a href="#">
+								<i class="fa fa-facebook"></i>
+							</a>
+							<a href="#">
+								<i class="fa fa-twitter"></i>
+							</a>
+							<a href="#">
+								<i class="fa fa-dribbble"></i>
+							</a>
+							<a href="#">
+								<i class="fa fa-behance"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<p
+						class="footer-text">
+						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+						Copyright &copy;<script>
+							document.write(new Date().getFullYear());
+						</script>
+						All rights reserved | This template is made with
+						<i class="fa fa-heart-o" aria-hidden="true"></i>
+						by
+						<a href="https://colorlib.com" target="_blank">Colorlib</a>
+						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+					</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- End footer Area -->
+
 {% endblock %}

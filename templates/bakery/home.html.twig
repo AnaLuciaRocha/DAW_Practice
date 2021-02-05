@@ -17,9 +17,7 @@
 
 			{% set menu_3  %}
 			<li>
-				<a href="#">Logout</a>
-				{# <a href="{{ path('app_login')}}">Logout</a> #}
-
+				<a href="{{ path('app_logout') }}">Logout</a>
 			</li>
 			{% endset %}
 
@@ -36,16 +34,16 @@
 			{% set vars = [] %}
 			{% set menu_2  %}
 			<li>
-				<a href="#">Register</a>
+				{# <a href="#">Register</a> #}
 
-				{# <a href="{{ path('app_register')}}">Register</a> #}
+				<a href="{{ path('app_register')}}">Register</a>
 			</li>
 			{% endset %}
 
             {% set menu_3  %}
 			<li>
-				<a href="#">Login</a>
-				{# <a href="{{ path('app_login')}}">Login</a> #}
+				{# <a href="#">Login</a> #}
+				<a href="{{ path('app_login')}}">Login</a>
 
 			</li>
 			{% endset %}
@@ -56,8 +54,7 @@
 		{% set menu_1  %}
 		<li
 			class="menu-active">
-			{# {{ path('bakery')}} #}
-			<a href="#">Menu</a>
+			<a href="{{ path('bakery')}}">Menu</a>
 		</li>
 		{% endset %}
 

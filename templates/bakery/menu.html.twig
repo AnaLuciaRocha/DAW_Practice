@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register
+{% block title %}Menu
 {% endblock %}
 
-{% block body %}
 
+{% block body %}
 
 	<header>
 		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
@@ -17,9 +17,7 @@
 
 			{% set menu_3  %}
 			<li>
-				<a href="#">Logout</a>
-				{# <a href="{{ path('app_login')}}">Logout</a> #}
-
+				<a href="{{ path('app_logout') }}">Logout</a>
 			</li>
 			{% endset %}
 
@@ -36,24 +34,28 @@
 			{% set vars = [] %}
 			{% set menu_2  %}
 			<li>
-				<a href="{{ path('bakery')}}">Home</a>
+				{# <a href="#">Register</a> #}
 
+				<a href="{{ path('app_register')}}">Register</a>
 			</li>
 			{% endset %}
 
 			{% set menu_3  %}
 			<li>
+				{# <a href="#">Login</a> #}
 				<a href="{{ path('app_login')}}">Login</a>
 
 			</li>
 			{% endset %}
 
 			{% set menu_my_orders = '' %}
-			{% set menu_1 = '' %}
-
 		{% endif %}
 
-	
+		{% set menu_1  %}
+		<li class="menu-active">
+			<a href="{{ path('bakery')}}">Menu</a>
+		</li>
+		{% endset %}
 
 
 		{% set vars = {  menu_1, menu_2, menu_3, menu_my_orders} %}
@@ -70,7 +72,7 @@
 			<div class="row d-flex align-items-center justify-content-center">
 				<div class="about-content col-lg-12">
 					<h1 class="text-white">
-						Register
+						Menu List
 					</h1>
 				</div>
 			</div>
@@ -78,53 +80,52 @@
 	</section>
 	<!-- End banner Area -->
 
+	<!-- Start menu-list Area -->
+	<section class="menu-list-area section-gap ">
+		<div class="container">
+			<div class="row">
+				<div class="menu-cat mx-auto  ">
+					<ul class="nav nav-pills categories-list" id="pills-tab" role="tablist">
+						{% for category in categories %}
+                        <li class="nav-item">
+							<a class="nav-link" cat-id={{category.id}} id="pizza-tab" data-toggle="pill" href="#{{category.name}}" role="tab" aria-controls="pizza" aria-selected="true">{{category.name}}</a>
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+				
 
-	<body>
-
-		{% for flashError in app.flashes('verify_email_error') %}
-			<div class="alert alert-danger" role="alert">
-				{{ flashError }}</div>
-		{% endfor %}
-
-
-
-
-			<!-- Start contact-page Area -->
-			<section class="contact-page-area section-gap">
-				<div class="container">
-					<div class="row">
-
-						<div class="col-lg-12">
-							{# <form class="form-area " id="myForm"  class="contact-form text-right"> #}
-                            {{ form_start(registrationForm)}}
-                            <div class="form-area " id="myForm" class="contact-form text-right" >
-								<div class="row">	
-									<div class="col-lg-6 form-group">
-									
-                                        
-					                    {{ form_row(registrationForm.name, {'attr': {'name':"name" ,'placeholder': "Enter your name", 'onfocus' : "this.placeholder = ''", 'onblur' : "this.placeholder = 'Enter your name'", 'class' : "common-input mb-20 form-control"  }})}}
-					                    {{ form_row(registrationForm.email, {'attr': {'name':"email" ,'placeholder': "Enter email address", 'pattern' : "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$", 'onfocus' : "this.placeholder = ''", 'onblur' : "this.placeholder = 'Enter email address'", 'class' : "common-input mb-20 form-control"  }})}}
-					                    {{ form_row(registrationForm.plainPassword.first, {'attr': {'name':"password1" ,'placeholder': "Enter password", 'onfocus' : "this.placeholder = ''", 'onblur' : "this.placeholder = 'Enter password'", 'class' : "common-input mb-20 form-control", 'type' : "password"  }})}}
-					                    {{ form_row(registrationForm.plainPassword.second, {'attr': {'name':"password2" ,'placeholder': "Repeat password", 'onfocus' : "this.placeholder = ''", 'onblur' : "this.placeholder = 'Repeat password'", 'class' : "common-input mb-20 form-control"  }})}}
-				                    
-                                    </div>
-									<div class="col-lg-12">
-										<div class="alert-msg" style="text-align: left;"></div>
-										<button  class="genric-btn primary" type="submit" name="submitok" style="float: left;">Register</button>
-									</div>
-                                   
-								</div> 
-                                </div>
-                                {{ form_end(registrationForm) }}
-							{# </form>	 #}
+			</div>
+			<div id="products" class="tab-content absolute">
+            {% for product in products %}
+				<div class="product tab-pane fade show active" cat-id="{{product.cat_id}}"  role="tabpanel" aria-labelledby="{{product.name}}-tab">
+                    <div class="single-menu-list row justify-content-between align-items-center">
+						<div class="col-lg-9">
+							<a href="#">
+								<h4>{{product.name}}</h4>
+							</a>
+							<p>
+								{{product.description}}
+							</p>
 						</div>
-					</div>
-				</div>	
-			</section>
-			<!-- End contact-page Area -->
+						<div class="col-lg-3 flex-row d-flex price-size">
+							<div class="s-price col">
 
-	</body>
+								<span>${{product.price}}</span>
+							</div>
 
+						</div>
+					</div>				
+				</div>
+                {% endfor %}
+			
+           
+
+			</div>
+             <button  class="genric-btn primary" id="showMore" type="submit" name="submitok" style="float: left;">Show More</button>
+		</div>
+	</section>
+	<!-- End menu-list Area -->
 
 	<!-- start footer Area -->
 	<footer class="footer-area section-gap">
@@ -194,4 +195,59 @@
 		</div>
 	</footer>
 	<!-- End footer Area -->
+
+{% endblock %}
+
+{% block pagescript %}
+<script>
+
+var INDEX=2;
+function showMore(){
+
+    $.ajax({
+    type: "GET",
+    url: "ajax/"+INDEX,
+    //dataType: "json",
+    success: function(response) {
+        $( "#products" ).append( response );
+            //console.log(response); 
+        }
+});
+}
+
+function applyFilter(categoryID) {
+    var products = $('#products');
+    products.find('.product').hide();
+    products.find (`[cat-id=${categoryID}]`).show();
+    console.log(products.find (`[cat-id=${categoryID}]`));
+}
+
+function removeFilter() {
+    var products = $('#products');
+    products.find('.product').show();
+}
+
+
+var categoriesList = $('.categories-list');
+var categories = categoriesList.find('a').not('all');
+categories.click(function () {
+    //console.log($(this).attr("cat-id"));
+    applyFilter($(this).attr("cat-id"));
+});
+
+var allButtom = categoriesList.find('.all');
+allButtom.click(function () {
+    removeFilter();
+})
+
+$('#showMore').click(
+    function(){
+        showMore();
+        INDEX+=2;
+    }
+)
+
+
+</script>
+
 {% endblock %}

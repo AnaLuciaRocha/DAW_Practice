@@ -19,6 +19,21 @@ class OrdersRepository extends ServiceEntityRepository
         parent::__construct($registry, Orders::class);
     }
 
+    /**
+     * @return Orders[] Returns an array of Orders objects
+     */
+    public function getOrders($user)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery('SELECT o.id, o.createdAt, o.status, o.total
+                                    FROM app\Entity\Orders o
+                                    WHERE  o.user = :user')->setParameter('user', $user);
+        return  $query->getResult();
+
+        // `id`, `cat_id`, `name`, `description`, `price`, `image`
+    }
+
+
     // /**
     //  * @return Orders[] Returns an array of Orders objects
     //  */
