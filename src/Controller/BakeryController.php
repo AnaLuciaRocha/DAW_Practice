@@ -24,23 +24,22 @@ use App\Repository\OrdersRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 
-
 class BakeryController extends AbstractController
 {
-    
-	private $session;
-	private $bakery_model;
-	private $validator;
-	
-	public function __construct(SessionInterface $session, Bakery_modelController $bakery_model, ValidatorInterface $validator)
+
+    private $session;
+    private $bakery_model;
+    private $validator;
+
+    public function __construct(SessionInterface $session, Bakery_modelController $bakery_model, ValidatorInterface $validator)
     {
-		$this->session = $session;
-		$this->bakery_model = $bakery_model;
+        $this->session = $session;
+        $this->bakery_model = $bakery_model;
         $this->validator = $validator;
     }
-	
-		
-	/**
+
+
+    /**
      * @Route("/bakery", name="bakery")
      */
     public function index(): Response
@@ -57,7 +56,7 @@ class BakeryController extends AbstractController
     {
 
 
-        $products = $prodRepo->getProductsWithLimit(0,2);
+        $products = $prodRepo->getProductsWithLimit(0, 2);
         $categories = $categories->getCategories();
 
         // var_dump($products[0]->getCategory()->getId());
@@ -72,8 +71,8 @@ class BakeryController extends AbstractController
         $sessionCart = $request->getSession();
         $cart = $sessionCart->get('cart');
 
-        
-    
+
+
         // $this->ajaxGetProductsAction($request);
 
         return $this->render('bakery/menu.html.twig', [
@@ -88,45 +87,66 @@ class BakeryController extends AbstractController
     }
 
 
+    //     /**
+    //      * @Route("ajax/{index}", name="ajax")
+    //      */
+    //     public function ajaxGetProductsAction(Request $request, int $index, ProductsRepository $prodRepo, CategoriesRepository $categories): Response
+    // {
+
+    //     $products = $prodRepo->getProductsWithLimit($index,2);
+
+
+    //         // var_dump($products[0]->getCategory()->getId());
+
+    //         if (!$products) {
+    //             $this->addFlash('danger', 'Unable to find products from database!');
+    //         }
+
+
+    //         $sessionCart = $request->getSession();
+    //         $cart = $sessionCart->get('cart');
+
+    //         $response = new JsonResponse(['data' => 123]);
+
+
+    //         // $this->ajaxGetProductsAction($request);
+
+    //         return $this->render('bakery/dumb.html.twig', [
+    //             'products' => $products
+    //         ]);
+    //     }
+
+
     /**
      * @Route("ajax/{index}", name="ajax")
      */
-    public function ajaxGetProductsAction(Request $request, int $index, ProductsRepository $prodRepo, CategoriesRepository $categories): Response
-{
+    public function ajaxGetProductsAction(Request $request, int $index, ProductsRepository $prodRepo, CategoriesRepository $categories)
+    {
 
-    $products = $prodRepo->getProductsWithLimit($index,2);
-    
+        $products = $prodRepo->getProductsWithLimit($index, 2);
+
 
         // var_dump($products[0]->getCategory()->getId());
 
         if (!$products) {
             $this->addFlash('danger', 'Unable to find products from database!');
         }
-      
 
-        $sessionCart = $request->getSession();
-        $cart = $sessionCart->get('cart');
-
-        
-    
-        // $this->ajaxGetProductsAction($request);
-
-        return $this->render('bakery/dumb.html.twig', [
-            'products' => $products
-        ]);
+        $response = new JsonResponse(['data' => 123]);
     }
 
 
     /**
      * @Route("/order/{id}", name="placeOrder")
      */
-    function order(Request $request, int $id, ProductsRepository $prodRepo){
+    function order(Request $request, int $id, ProductsRepository $prodRepo)
+    {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        
-               
-        
+
+
+
         $entityManager = $this->getDoctrine()->getManager();
         //1) create order object
         $order = new Orders();
@@ -137,29 +157,29 @@ class BakeryController extends AbstractController
         $orderProduct = $this->getDoctrine()
             ->getRepository(Products::class)
             ->find($id);
-       
-        $order -> setProduct($orderProduct);
-        
+
+        $order->setProduct($orderProduct);
+
 
         $entityManager->persist($order);
         // 3) create order on the database
         $entityManager->flush();
 
 
-            // actually executes the queries (i.e. the INSERT query)
-            $entityManager->flush();
-        
+        // actually executes the queries (i.e. the INSERT query)
+        $entityManager->flush();
+
         $this->addFlash('success', 'Thank you for your order!');
-        
+
 
         return $this->redirectToRoute('menu');
     }
 
 
-      /**
+    /**
      * @Route("/orders", name="myOrders")
      */
-    public function orders(Request $request ,OrdersRepository $orders)
+    public function orders(Request $request, OrdersRepository $orders)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         //Get session cart
@@ -168,7 +188,7 @@ class BakeryController extends AbstractController
 
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        
+
         //Get orders from database
         $orders =  $this->getDoctrine()
             ->getRepository(Orders::class)
@@ -176,17 +196,9 @@ class BakeryController extends AbstractController
 
         // dump($orders);
         // die();
-        
-        // //Find order items for each order 
-        // foreach ($orders as &$order) {
-        //     $orderItems[$order["id"]] = $items->getOrderItems($order["id"]);
-        // }
-        
+
         return $this->render('bakery/myOrders.html.twig', [
-            'orders'=>$orders
+            'orders' => $orders
         ]);
     }
-
 }
-
-

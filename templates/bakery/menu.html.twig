@@ -208,10 +208,10 @@ function showMore(){
     $.ajax({
     type: "GET",
     url: "ajax/"+INDEX,
-    //dataType: "json",
+    dataType: "json",
     success: function(response) {
         $( "#products" ).append( response );
-            //console.log(response); 
+            console.log(response); 
         }
 });
 }
