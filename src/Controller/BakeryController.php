@@ -118,37 +118,6 @@ class BakeryController extends AbstractController
 
 
     /**
-     *  @Route("/add_product/{id}", name="addProduct")
-     */
-    public function addProduct(Request $request, int $id)
-    {
-        // getting session 
-        $sessionCart = $request->getSession();
-
-        $cart = $sessionCart->get('cart');
-
-        //Create cart
-        if ($cart == null) {
-            $cart = []; // creates an array
-        }
-
-        //Set Quantity for each product
-        if (!isset($cart[$id])) { //if itemID isnt in the cart
-            $cart["$id"] = $id;
-            $quantity = 0;
-        } else {
-            $quantity = $cart["$id"]["quantity"];
-        }
-
-        //set quantity for each product, by default is 1
-        $cart["$id"] = array("itemID" => $id, "quantity" => $quantity + 1);
-
-        $sessionCart->set('cart', $cart);
-
-        return $this->redirectToRoute('menu');
-    }
-    
-    /**
      * @Route("/order/{id}", name="placeOrder")
      */
     function order(Request $request, int $id, ProductsRepository $prodRepo){
@@ -156,7 +125,7 @@ class BakeryController extends AbstractController
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
         
-        
+               
         
         $entityManager = $this->getDoctrine()->getManager();
         //1) create order object
@@ -164,8 +133,14 @@ class BakeryController extends AbstractController
         $order->setUser($user);
         $date = new \DateTime('@' . strtotime('now'));
         $order->setCreatedAt($date);
-        $order -> setStatus("Finished");
-        $order -> setTotal($prodRepo->getProduct($id)["price"]);
+        //Get product ordered
+        $orderProduct = $this->getDoctrine()
+            ->getRepository(Products::class)
+            ->find($id);
+       
+        $order -> setProduct($orderProduct);
+        
+
         $entityManager->persist($order);
         // 3) create order on the database
         $entityManager->flush();
@@ -178,6 +153,38 @@ class BakeryController extends AbstractController
         
 
         return $this->redirectToRoute('menu');
+    }
+
+
+      /**
+     * @Route("/orders", name="myOrders")
+     */
+    public function orders(Request $request ,OrdersRepository $orders)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        //Get session cart
+        $sessionCart = $request->getSession();
+        $cart = $sessionCart->get('cart');
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        
+        //Get orders from database
+        $orders =  $this->getDoctrine()
+            ->getRepository(Orders::class)
+            ->findAll();
+
+        // dump($orders);
+        // die();
+        
+        // //Find order items for each order 
+        // foreach ($orders as &$order) {
+        //     $orderItems[$order["id"]] = $items->getOrderItems($order["id"]);
+        // }
+        
+        return $this->render('bakery/myOrders.html.twig', [
+            'orders'=>$orders
+        ]);
     }
 
 }

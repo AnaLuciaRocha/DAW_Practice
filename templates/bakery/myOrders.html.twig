@@ -23,8 +23,8 @@
 
 			{% set menu_my_orders  %}
 			<li>
-				{# <a href="#">My Orders</a> #}
-				<a href="{{ path('myOrders')}}">My Orders</a>
+				<a href="'{{ path('myOrders')}}'">My Orders</a>
+				{# <a href="{{ path('myOrders')}}">My Orders</a> #}
 
 			</li>
 			{% endset %}
@@ -65,65 +65,42 @@
 
 	</header>
 
-	<!-- start banner Area -->
 	<section class="banner-area relative about-banner" id="home">
 		<div class="overlay overlay-bg"></div>
 		<div class="container">
 			<div class="row d-flex align-items-center justify-content-center">
 				<div class="about-content col-lg-12">
 					<h1 class="text-white">
-						Menu List
+						My Orders
 					</h1>
 				</div>
 			</div>
 		</div>
-
 	</section>
 	<!-- End banner Area -->
 
 	<!-- Start menu-list Area -->
-	<section class="menu-list-area section-gap ">
+	<section class="menu-list-area section-gap">
 		<div class="container">
-			<div class="row">
-				<div class="menu-cat mx-auto  ">
-					<ul class="nav nav-pills categories-list" id="pills-tab" role="tablist">
-						{% for category in categories %}
-                        <li class="nav-item">
-							<a class="nav-link" cat-id={{category.id}} id="pizza-tab" data-toggle="pill" href="#{{category.name}}" role="tab" aria-controls="pizza" aria-selected="true">{{category.name}}</a>
-						</li>
-						{% endfor %}
-					</ul>
-				</div>
-				
+			<div id="pills-tabContent" class="tab-content absolute">
+				{% for order in orders %}
+                <div class="tab-pane fade show active" id="pizza" role="tabpanel" aria-labelledby="pizza-tab">
 
-			</div>
-			<div id="products" class="tab-content absolute">
-            {% for product in products %}
-				<div class="product tab-pane fade show active" cat-id="{{product.cat_id}}"  role="tabpanel" aria-labelledby="{{product.name}}-tab">
-                    <div class="single-menu-list row justify-content-between align-items-center">
+					<div class="single-menu-list row justify-content-between align-items-center">
 						<div class="col-lg-9">
-							<a href="{{ path('placeOrder', {'id': product.id }) }}">
-								<h4>{{product.name}}</h4>
-							</a>
-							<p>
-								{{product.description}}
-							</p>
+							<p>{{order.createdAt|date('Y-m-d H:i:s')}}</p>
+							<h4>{{order.getProduct().getName()}}</h4>
 						</div>
 						<div class="col-lg-3 flex-row d-flex price-size">
 							<div class="s-price col">
-
-								<span>${{product.price}}</span>
+								<span>${{order.getProduct().getPrice()}}</span>
 							</div>
-
 						</div>
-					</div>				
+					</div>
+
 				</div>
                 {% endfor %}
-			
-           
-
 			</div>
-             <button  class="genric-btn primary" id="showMore" type="submit" name="submitok" style="float: left;">Show More</button>
 		</div>
 	</section>
 	<!-- End menu-list Area -->
@@ -196,59 +173,5 @@
 		</div>
 	</footer>
 	<!-- End footer Area -->
-
-{% endblock %}
-
-{% block pagescript %}
-<script>
-
-var INDEX=2;
-function showMore(){
-
-    $.ajax({
-    type: "GET",
-    url: "ajax/"+INDEX,
-    //dataType: "json",
-    success: function(response) {
-        $( "#products" ).append( response );
-            //console.log(response); 
-        }
-});
-}
-
-function applyFilter(categoryID) {
-    var products = $('#products');
-    products.find('.product').hide();
-    products.find (`[cat-id=${categoryID}]`).show();
-    console.log(products.find (`[cat-id=${categoryID}]`));
-}
-
-function removeFilter() {
-    var products = $('#products');
-    products.find('.product').show();
-}
-
-
-var categoriesList = $('.categories-list');
-var categories = categoriesList.find('a').not('all');
-categories.click(function () {
-    //console.log($(this).attr("cat-id"));
-    applyFilter($(this).attr("cat-id"));
-});
-
-var allButtom = categoriesList.find('.all');
-allButtom.click(function () {
-    removeFilter();
-})
-
-$('#showMore').click(
-    function(){
-        showMore();
-        INDEX+=2;
-    }
-)
-
-
-</script>
 
 {% endblock %}

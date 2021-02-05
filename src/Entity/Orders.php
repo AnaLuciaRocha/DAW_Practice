@@ -4,11 +4,13 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
+
 /**
  * Orders
  *
- * @ORM\Table(name="orders", indexes={@ORM\Index(name="user_id", columns={"user_id"})})
-* @ORM\Entity(repositoryClass="App\Repository\OrdersRepository")
+ * @ORM\Table(name="orders", indexes={@ORM\Index(name="user_id", columns={"user_id"}), @ORM\Index(name="product_id", columns={"product_id"})})
+ * @ORM\Entity(repositoryClass="App\Repository\OrdersRepository")
  */
 class Orders
 {
@@ -29,28 +31,24 @@ class Orders
     private $createdAt;
 
     /**
-     * @var bool|null
+     * @var \User
      *
-     * @ORM\Column(name="status", type="boolean", nullable=true)
-     */
-    private $status;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="total", type="integer", nullable=true)
-     */
-    private $total;
-
-    /**
-     * 
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
      */
     private $user;
+
+    /**
+     * @var \Products
+     *
+     * @ORM\ManyToOne(targetEntity="Products")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="product_id", referencedColumnName="id")
+     * })
+     */
+    private $product;
 
     public function getId(): ?int
     {
@@ -69,30 +67,6 @@ class Orders
         return $this;
     }
 
-    public function getStatus(): ?bool
-    {
-        return $this->status;
-    }
-
-    public function setStatus(?bool $status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    public function getTotal(): ?int
-    {
-        return $this->total;
-    }
-
-    public function setTotal(?int $total): self
-    {
-        $this->total = $total;
-
-        return $this;
-    }
-
     public function getUser(): ?User
     {
         return $this->user;
@@ -101,6 +75,18 @@ class Orders
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Products
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Products $product): self
+    {
+        $this->product = $product;
 
         return $this;
     }
