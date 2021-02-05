@@ -53,6 +53,23 @@ class ProductsRepository extends ServiceEntityRepository
     }
 
 
+          /**
+     * @return Products[] Returns an array of Products objects
+     */
+    public function getProductsWithLimitCategory($index, $noObjects, $category): Array
+    {
+        $em=$this->getEntityManager();
+        $query = $em->createQuery('SELECT p.id, p.name, p.description,c.id as cat_id, p.price, p.image
+                                    FROM app\Entity\Products p
+                                    JOIN app\Entity\Categories c
+                                    WHERE  p.category = c.id AND
+                                    p.category = :category')->setParameter('category', $category);
+        return  $query->setMaxResults($noObjects)->setFirstResult($index)->getResult();
+
+        // `id`, `cat_id`, `name`, `description`, `price`, `image`
+    }
+
+
     /**
      * @return Products Returns an Product object
      */
