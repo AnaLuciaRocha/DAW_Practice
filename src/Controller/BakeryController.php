@@ -93,27 +93,16 @@ class BakeryController extends AbstractController
      */
     public function ajaxGetProductsAction(Request $request, int $index, ProductsRepository $prodRepo, CategoriesRepository $categories): Response
 {
-    $entityManager = $this->getDoctrine()->getManager();
 
-    
-    // // dump($request->get('index'));
-
-    // if ($request->isXMLHttpRequest()) {         
-    //     return new JsonResponse(array('data' => 'this is a json response'));
-    // }
-
-    // return new Response('This is not ajax!', 400);
     $products = $prodRepo->getProductsWithLimit($index,2);
-    $categories = $categories->getCategories();
+    
 
         // var_dump($products[0]->getCategory()->getId());
 
         if (!$products) {
             $this->addFlash('danger', 'Unable to find products from database!');
         }
-        if (!$categories) {
-            $this->addFlash('danger', 'Unable to find categories from database!');
-        }
+      
 
         $sessionCart = $request->getSession();
         $cart = $sessionCart->get('cart');
@@ -123,15 +112,74 @@ class BakeryController extends AbstractController
         // $this->ajaxGetProductsAction($request);
 
         return $this->render('bakery/dumb.html.twig', [
-            'products' => $products,
-            'categories' => $categories,
-            'cart' => $cart,
-            'product' => $prodRepo
-
-            // 'cart_size' => $cart['size'],
-            // 'cart_price' => $cart['price']
+            'products' => $products
         ]);
     }
+
+
+    /**
+     *  @Route("/add_product/{id}", name="addProduct")
+     */
+    public function addProduct(Request $request, int $id)
+    {
+        // getting session 
+        $sessionCart = $request->getSession();
+
+        $cart = $sessionCart->get('cart');
+
+        //Create cart
+        if ($cart == null) {
+            $cart = []; // creates an array
+        }
+
+        //Set Quantity for each product
+        if (!isset($cart[$id])) { //if itemID isnt in the cart
+            $cart["$id"] = $id;
+            $quantity = 0;
+        } else {
+            $quantity = $cart["$id"]["quantity"];
+        }
+
+        //set quantity for each product, by default is 1
+        $cart["$id"] = array("itemID" => $id, "quantity" => $quantity + 1);
+
+        $sessionCart->set('cart', $cart);
+
+        return $this->redirectToRoute('menu');
+    }
+    
+    /**
+     * @Route("/order/{id}", name="placeOrder")
+     */
+    function order(Request $request, int $id, ProductsRepository $prodRepo){
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        
+        
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        //1) create order object
+        $order = new Orders();
+        $order->setUser($user);
+        $date = new \DateTime('@' . strtotime('now'));
+        $order->setCreatedAt($date);
+        $order -> setStatus("Finished");
+        $order -> setTotal($prodRepo->getProduct($id)["price"]);
+        $entityManager->persist($order);
+        // 3) create order on the database
+        $entityManager->flush();
+
+
+            // actually executes the queries (i.e. the INSERT query)
+            $entityManager->flush();
+        
+        $this->addFlash('success', 'Thank you for your order!');
+        
+
+        return $this->redirectToRoute('menu');
+    }
+
 }
 
 
